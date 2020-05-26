@@ -34,7 +34,7 @@ class Sale(models.Model):
     client=models.ForeignKey(Client, on_delete=models.PROTECT, verbose_name="Clientes")
     sale_note=models.CharField("Observações", max_length=200)
     def __str__(self):
-        return "Venda a "+str(self.client)+"/"+str(self.sale_date)[:10]
+        return "Venda a "+str(self.client)+" - "+str(self.sale_date)[:10]
 
 class Movement(models.Model):
     id=models.AutoField(primary_key=True)

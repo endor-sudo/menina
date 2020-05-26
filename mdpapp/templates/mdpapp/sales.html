@@ -4,17 +4,15 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Nome</th>
-                    <th>Endereço</th>
-                    <th>Contacto</th>
+                    <th>Cliente</th>
+                    <th>Data</th>
                 </tr>
             </thead>
             <tbody>
-                {% for client in clients %}
+                {% for sale in sales %}
                 <tr>
-                    <td>{{ client }}</td>
-                    <td>{{ client.client_address }}</td>
-                    <td>{{ client.client_contact }}</td>
+                    <td>{{ sale.client }}</td>
+                    <td>{{ sale.sale_date }}</td>
                 </tr>
                 {% empty %}
                 <tr>
