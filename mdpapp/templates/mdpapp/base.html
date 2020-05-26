@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>
+            Menina do Peixe
+        </title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+
+        {% load static %}
+        <link rel="stylesheet" type="text/css" href="{% static 'index.css' %}">
+    </head>
+    <body>
+        <!-- Header -->
+        <header class="container-fluid p-3 bg-dark d-flex justify-content-center">
+            <!-- Brand -->
+            <a class="text-white" href="{% url 'index' %}">
+                <h1>Menina do Peixe</h1>
+            </a>
+        </header>
+        <!-- Middle section -->
+        <div class="container-fluid p-3">
+            {% block content %}{% endblock content %}
+        </div>
+        <!-- Footer -->
+        <footer class="container-fluid p-3 bg-dark text-white fixed-bottom d-flex justify-content-end">©antonio_freitas_2020</footer>
+    </body>
+</html>
