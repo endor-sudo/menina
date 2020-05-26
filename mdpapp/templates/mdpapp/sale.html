@@ -4,17 +4,17 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Cliente</th>
-                    <th>Data</th>
+                    <th>Produto</th>
+                    <th>Qt.</th>
+                    <th>Preço/Uni</th>
                 </tr>
             </thead>
             <tbody>
-                {% for sale in sales %}
+                {% for movement in movements %}
                 <tr>
-                    <td>{{ sale.client }}</td>
-                    <td>
-                        <a href="{% url 'sale' sale.id %}">{{ sale.sale_date }}</a>
-                    </td>
+                    <td>{{ movement.movement_product }}</td>
+                    <td>{{ movement.movement_quantity }}</td>
+                    <td>{{ movement.movement_selling_price }}</td>
                 </tr>
                 {% empty %}
                 <tr>

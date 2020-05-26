@@ -13,4 +13,6 @@ urlpatterns = [
     path('dblists/products/', views.products, name='products'),
     # List Sales
     path('dblists/sales/', views.sales, name='sales'),
+    # List Movements in a Sale
+    path('dblists/sales/<int:sale_id>/', views.sale, name='sale'),
 ]
