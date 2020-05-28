@@ -11,9 +11,13 @@
             <tbody>
                 {% for sale in sales %}
                 <tr>
-                    <td>{{ sale.client }}</td>
+                    <td style="vertical-align: middle;">{{ sale.client }}</td>
                     <td>
-                        <a href="{% url 'sale' sale.id %}">{{ sale.sale_date }}</a>
+                        <a href="{% url 'sale' sale.id %}">
+                            <button type="button" class="btn btn-dark">
+                                {{ sale.sale_date }}
+                            </button>
+                        </a>
                     </td>
                 </tr>
                 {% empty %}

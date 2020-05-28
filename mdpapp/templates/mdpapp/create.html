@@ -1,0 +1,49 @@
+{% extends "mdpapp/base.html" %}
+{% block content %}
+    <table class="d-flex justify-content-center">
+        <tr>
+            <td class="d-flex justify-content-center">
+                <a href="{% url 'client_creation' %}">
+                    <button type="button" class="btn btn-light">
+                        <h2>
+                            Cliente
+                        </h2>
+                    </button>
+                </a>
+            </td>
+        </tr>
+        <tr>
+            <td class="d-flex justify-content-center">
+                <a href="{% url 'family_creation' %}">
+                    <button type="button" class="btn btn-light">
+                        <h2>
+                            Família de Produto
+                        </h2>
+                    </button>
+                </a>
+            </td>
+        </tr>
+        <tr>
+            <td class="d-flex justify-content-center">
+                <a href="{% url 'product_creation' %}">
+                    <button type="button" class="btn btn-light">
+                        <h2>
+                            Produto
+                        </h2>
+                    </button>
+                </a>
+            </td>
+        </tr>
+        <tr>
+            <td class="d-flex justify-content-center">
+                <a href="{% url 'client_creation' %}">
+                    <button type="button" class="btn btn-light">
+                        <h2>
+                            Venda
+                        </h2>
+                    </button>
+                </a>
+            </td>
+        </tr>
+    </table>
+{% endblock content %}

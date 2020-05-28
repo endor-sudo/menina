@@ -1,0 +1,13 @@
+{% extends "mdpapp/base.html" %}
+{% block content %}
+
+
+<p>Crie um NOVO CLIENTE:</p>
+<form action="{% url 'client_creation' %}" method='post'> 
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Submit">
+</form>
+
+
+{% endblock content %}
