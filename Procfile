@@ -1,0 +1,1 @@
+web: gunicorn meninadopeixe.wsgi --log-file -
