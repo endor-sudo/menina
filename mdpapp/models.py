@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class Client(models.Model):
     """fishgirl's clients"""
@@ -8,11 +9,13 @@ class Client(models.Model):
     client_email=models.EmailField("Email", max_length=200, null=True)
     client_note=models.CharField("Observações", max_length=200)
     client_date_added=models.DateTimeField("Data Adicionado", auto_now_add=True)
+    owner=models.ForeignKey(User, on_delete=models.PROTECT)
     def __str__(self):
         return self.client_name
 
 class Family(models.Model):
     family_name=models.CharField("Família", max_length=200, unique=True)
+    owner=models.ForeignKey(User, on_delete=models.PROTECT)
     class Meta:
         verbose_name_plural='Families'
     def __str__(self):
