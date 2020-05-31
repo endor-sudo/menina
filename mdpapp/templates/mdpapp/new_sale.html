@@ -1,0 +1,15 @@
+{% extends "mdpapp/base.html" %}
+{% block content %}
+
+
+<p>Crie uma NOVA VENDA:</p>
+<form action="{% url 'sale_creation' %}" method='post'> 
+    {% csrf_token %}
+    {{ sale_form.as_p }}
+    <hr>
+    {{ movement_form.as_p }}
+    <input type="submit" value="Submit">
+</form>
+
+
+{% endblock content %}

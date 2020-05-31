@@ -23,4 +23,6 @@ urlpatterns = [
     path('lancar/family/', views.create_family, name='family_creation'),
     # Create Product
     path('lancar/product/', views.create_product, name='product_creation'),
+    # Create Sale
+    path('lancar/sale/', views.create_sale, name='sale_creation'),
 ]
