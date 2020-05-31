@@ -1,5 +1,11 @@
 {% extends "mdpapp/base.html" %}
 {% block content %}
+
+{% if user.is_authenticated %}
+<div class="d-flex justify-content-between">
+    <div> Olá, {{ user.username }} </div> 
+    <div><a href="{% url 'user:logout' %}"><button type="button" class="btn btn-dark">log out</button></a></div>
+</div>
 <table class="d-flex justify-content-center">
     <tr>
         <td class="d-flex justify-content-center">
@@ -23,5 +29,10 @@
         </td>
     </tr>
 </table>
+{% else %}
+    <a class="d-flex justify-content-center" href="{% url 'user:login' %}"><button type="button" class="btn btn-dark">log in</button></a>
+{% endif %}
+
+
 {% endblock content %}
 
