@@ -6,16 +6,20 @@
                 <tr>
                     <th>Cliente</th>
                     <th>Data</th>
+                    <th>Total</th>
                 </tr>
             </thead>
             <tbody>
                 {% for sale in sales %}
                 <tr>
                     <td style="vertical-align: middle;">{{ sale.client }}</td>
+                    <td style="vertical-align: middle;">
+                        {{ sale.sale_date }}
+                    </td>
                     <td>
                         <a href="{% url 'sale' sale.id %}">
                             <button type="button" class="btn btn-dark">
-                                {{ sale.sale_date }}
+                                {{ sale.sale_total }}€
                             </button>
                         </a>
                     </td>

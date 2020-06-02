@@ -36,6 +36,7 @@ class Sale(models.Model):
     sale_date=models.DateTimeField("Data da Venda", auto_now_add=True)
     client=models.ForeignKey(Client, on_delete=models.PROTECT, verbose_name="Clientes")
     sale_note=models.CharField("Observações", max_length=200, null=True)
+    sale_total=models.CharField(max_length=200)
     def __str__(self):
         return "Venda a "+str(self.client)+" - "+str(self.sale_date)[:10]
 

@@ -121,8 +121,18 @@ def create_sale(request):
         context = {'sale_form': sale_form, 'formset': formset}
         sales=Sale.objects.all()#sales=Sale.objects.filter(owner=request.user).all()
         if sale_form.is_valid() and formset.is_valid():
+            saleprov=sale_form.save(commit=False)
+            sale_total=[]
+            for form in formset:
+                #cleans the movement_form to be used as kwargs in the Movement instantiation
+                mov_dict=form.cleaned_data
+                try:
+                    sale_total.append(float(mov_dict['movement_quantity'])*float(mov_dict['movement_purchase_price']))
+                except KeyError:
+                    pass
+            saleprov.sale_total=round(sum(sale_total),3)
             #saves sale
-            sale_form.save()
+            saleprov.save()
             #looks for the sale's id saved above
             for sale in sales:
                 sale_id=sale.id
