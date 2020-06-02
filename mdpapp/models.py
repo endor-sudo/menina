@@ -44,7 +44,7 @@ class Movement(models.Model):
     sale=models.ForeignKey(Sale, on_delete=models.CASCADE, verbose_name="Venda")
     movement_product=models.ForeignKey(Product, on_delete=models.PROTECT, verbose_name="Produto")
     movement_quantity=models.DecimalField("Quantidade", max_digits=7,decimal_places=3)
-    movement_purchase_price=models.DecimalField("Preço de Custo", max_digits=7,decimal_places=3, null=True, help_text="Introduza '0' para ignorar.")
+    movement_purchase_price=models.DecimalField("Preço de Custo", max_digits=7,decimal_places=3, null=True, help_text="'0' para ignorar.")
     movement_selling_price=models.DecimalField("Preço de Venda", max_digits=7,decimal_places=3)
     def __str__(self):
         return f"{self.movement_quantity}kg de {self.movement_product}"

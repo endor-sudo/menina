@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .models import Client, Product, Sale, Movement
 from django.contrib.auth.decorators import login_required
-
+from django.forms import modelformset_factory, inlineformset_factory
 
 from django.http import HttpResponseRedirect, Http404
 from django.urls import reverse
@@ -108,32 +108,41 @@ def create_product(request):
 @login_required
 def create_sale(request):
     """Create a new product."""
+    movement_formset = modelformset_factory(Movement, exclude=('sale',), extra=5)
     if request.method != 'POST':
         # No data submitted; create a blank form.
         sale_form = SaleForm()
-        movement_form = MovementForm()
+        formset=movement_formset(queryset=Movement.objects.none())
+        context = {'sale_form': sale_form, 'formset': formset}
     else:
         # POST data submitted; process data. 
         sale_form = SaleForm(request.POST)
-        movement_form = MovementForm(request.POST)
-        sales=Sale.objects.filter(owner=request.user).all()
-        if sale_form.is_valid():
-            if movement_form.is_valid():
-                #saves sale
-                sale_form.save()
-                #looks for the sale's id saved above
-                for sale in sales:
-                    sale_id=sale.id
-                #gets the sales instance from the id 
-                sale_instance=Sale.objects.filter(owner=request.user).get(id=sale_id)
+        formset = movement_formset(request.POST,request.FILES, queryset=Movement.objects.none())
+        context = {'sale_form': sale_form, 'formset': formset}
+        sales=Sale.objects.all()#sales=Sale.objects.filter(owner=request.user).all()
+        if sale_form.is_valid() and formset.is_valid():
+            #saves sale
+            sale_form.save()
+            #looks for the sale's id saved above
+            for sale in sales:
+                sale_id=sale.id
+            #gets the sales instance from the id 
+            sale_instance=Sale.objects.get(id=sale_id)
+            it=0
+            for form in formset:
                 #cleans the movement_form to be used as kwargs in the Movement instantiation
-                mov_dict=movement_form.cleaned_data
-                #instantiates the Movement...
-                movement_=Movement(sale=sale_instance, movement_product=mov_dict['movement_product'],
-                movement_quantity=mov_dict['movement_quantity'],movement_purchase_price=mov_dict['movement_purchase_price'],
-                movement_selling_price=mov_dict['movement_selling_price'])
+                mov_dict=form.cleaned_data
+                try:
+                    #instantiates the Movement...
+                    movement_=Movement(sale=sale_instance, movement_product=mov_dict['movement_product'],
+                    movement_quantity=mov_dict['movement_quantity'],movement_purchase_price=mov_dict['movement_purchase_price'],
+                    movement_selling_price=mov_dict['movement_selling_price'])
+                except KeyError:
+                    if it==0:
+                        sale_instance.delete()
+                        return HttpResponseRedirect(reverse('sale_creation'))#adicionar a nota de que não podem haver vendas sem produtos
                 #...and saves it
                 movement_.save()
+                it+=1
             return HttpResponseRedirect(reverse('sale_creation'))
-    context = {'sale_form': sale_form, 'movement_form': movement_form}
     return render(request, 'mdpapp/new_sale.html', context)
