@@ -108,7 +108,7 @@ def create_product(request):
 @login_required
 def create_sale(request):
     """Create a new product."""
-    movement_formset = modelformset_factory(Movement, exclude=('sale',), extra=5)
+    movement_formset = modelformset_factory(Movement, exclude=('sale',), extra=1)
     if request.method != 'POST':
         # No data submitted; create a blank form.
         sale_form = SaleForm()
