@@ -127,7 +127,7 @@ def create_sale(request):
                 #cleans the movement_form to be used as kwargs in the Movement instantiation
                 mov_dict=form.cleaned_data
                 try:
-                    sale_total.append(float(mov_dict['movement_quantity'])*float(mov_dict['movement_purchase_price']))
+                    sale_total.append(float(mov_dict['movement_quantity'])*float(mov_dict['movement_selling_price']))
                 except KeyError:
                     pass
             saleprov.sale_total=round(sum(sale_total),3)
