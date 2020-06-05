@@ -1,27 +1,58 @@
 {% extends "mdpapp/base.html" %}
 {% block content %}
 
-<style>
-.btn{
-    padding:5rem;
-}
-</style>
-
-<p>Crie uma NOVA VENDA:</p>
-<form action="{% url 'sale_creation' %}" method='post'> 
+<form method="POST">
     {% csrf_token %}
-    {{ sale_form.as_p }}
-    <hr>
-    {{ formset.management_form }}
-    {% for form in formset %}
-        <div class="row form-row spacer">
-            {{ form.as_p }}
-        </div>
-    {% endfor %}
-    <div class="input-group-append">
-        <button class="btn btn-block btn-success add-form-row">+</button>
-    </div>
-    <input type="submit" class="btn btn-block btn-primary">
+    {{ sale_form.as_p}}
+    
+    <table class="table form-table table-bordered table-sm">
+                        <thead class="text-center">
+                        <tr>
+                            <th>Produto</th>
+                            <th>Qt.</th>
+                            <th>Preço de Compra</th>
+                            <th>Preço de Venda</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for form in formset %}
+                            <tr class="item">
+                                <td>
+                                    {{ form.movement_product }}
+                                </td>
+                                <td>
+                                    {{ form.movement_quantity }}
+                                </td>
+                                <td>
+                                    {{ form.movement_purchase_price }}
+                                </td>
+                                <td>
+                                    {{ form.movement_selling_price }}
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-danger btn-sm remove-form-row"
+                                            id="{{ formset.prefix }}">
+                                      
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        <tr>
+                            <td colspan="9"
+                                style="border-left: none!important; border-right: none !important; border-bottom: none!important;">
+                                <button type="button" class="btn btn-sm btn-success add-form-row"
+                                        id="{{ formset.prefix }}">
+                                   Add
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    {{ formset.management_form }}
+
+    <button type="submit">Submit</button>
 </form>
 
 
@@ -29,61 +60,94 @@
 
 <script type='text/javascript'>
 function updateElementIndex(el, prefix, ndx) {
-    var id_regex = new RegExp('(' + prefix + '-\\d+)');
-    var replacement = prefix + '-' + ndx;
-    if ($(el).attr("for")) $(el).attr("for", $(el).attr("for").replace(id_regex, replacement));
+    var id_regex = new RegExp('(' + prefix + '-\\d+-)');
+    console.log(id_regex);
+    console.log('Ola');
+    var replacement = prefix + '-' + ndx + '-';
+    console.log(replacement);
+    if ($(el).attr("for")) $(el).attr("for", $(el).attr("for").replace(id_regex,
+    replacement));
     if (el.id) el.id = el.id.replace(id_regex, replacement);
     if (el.name) el.name = el.name.replace(id_regex, replacement);
 }
-function cloneMore(selector, prefix) {
-    var newElement = $(selector).clone(true);
-    var total = $('#id_' + prefix + '-TOTAL_FORMS').val();
-    newElement.find(':input:not([type=button]):not([type=submit]):not([type=reset])').each(function() {
-        var name = $(this).attr('name').replace('-' + (total-1) + '-', '-' + total + '-');
+
+function addForm(btn, prefix) {
+    var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+    console.log(formCount);
+    console.log(prefix);
+    if (formCount < 1000) {
+        // Clone a form (without event handlers) from the first form
+        var row = $(".item:last").clone(true);
+        console.log(row);
+
+        row.find(':input:not([type=button]):not([type=submit]):not([type=reset])').each(function() {
+        var name = $(this).attr('name').replace('-' + (formCount-1) + '-', '-' + formCount + '-');
         var id = 'id_' + name;
         $(this).attr({'name': name, 'id': id}).val('').removeAttr('checked');
-    });
-    newElement.find('label').each(function() {
-        var forValue = $(this).attr('for');
-        if (forValue) {
-          forValue = forValue.replace('-' + (total-1) + '-', '-' + total + '-');
-          $(this).attr({'for': forValue});
-        }
-    });
-    total++;
-    $('#id_' + prefix + '-TOTAL_FORMS').val(total);
-    $(selector).after(newElement);
-    var conditionRow = $('.form-row:not(:last)');
-    conditionRow.find('.btn.add-form-row')
-    .removeClass('btn-success').addClass('btn-danger')
-    .removeClass('add-form-row').addClass('remove-form-row')
-    .html('<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>');
+        });
+        // Insert it after the last form
+        $(row).removeAttr('id').hide().insertAfter(".item:last").slideDown(300);
+
+        // Remove the bits we don't want in the new row/form
+        // e.g. error messages
+        $(".errorlist", row).remove();
+        $(row).children().removeClass("error");
+
+        // Add an event handler for the delete item/form link
+        $(row).find(".delete").click(function () {
+            return deleteForm(this, prefix);
+        });
+        // Update the total form count
+        $("#id_" + prefix + "-TOTAL_FORMS").val(formCount + 1);
+
+    } // End if
+
     return false;
 }
-function deleteForm(prefix, btn) {
-    var total = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
-    if (total > 1){
-        btn.closest('.form-row').remove();
-        var forms = $('.form-row');
-        $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
-        for (var i=0, formCount=forms.length; i<formCount; i++) {
-            $(forms.get(i)).find(':input').each(function() {
-                updateElementIndex(this, prefix, i);
+
+
+function deleteForm(btn, prefix) {
+      var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+      if (formCount > 1) {
+          // Delete the item/form
+          var goto_id = $(btn).find('input').val();
+          if( goto_id ){
+            $.ajax({
+                url: "/" + window.location.pathname.split("/")[1] + "/formset-data-delete/"+ goto_id +"/?next="+ window.location.pathname,
+                error: function () {
+                  console.log("error");
+                },
+                success: function (data) {
+                  $(btn).parents('.item').remove();                 
+                },
+                type: 'GET'
             });
-        }
-    }
-    return false;
-}
-$(document).on('click', '.add-form-row', function(e){
-    e.preventDefault();
-    cloneMore('.form-row:last', 'form');
-    return false;
-});
-$(document).on('click', '.remove-form-row', function(e){
-    e.preventDefault();
-    deleteForm('form', $(this));
-    return false;
-});
+          }else{
+            $(btn).parents('.item').remove();
+          }
+
+          var forms = $('.item'); // Get all the forms
+          // Update the total number of forms (1 less than before)
+          $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
+          var i = 0;
+          // Go through the forms and set their indices, names and IDs
+          for (formCount = forms.length; i < formCount; i++) {
+              $(forms.get(i)).find('.formset-field').each(function () {
+                  updateElementIndex(this, prefix, i);
+              });
+          }
+      } // End if
+
+      return false;
+  }
+
+  $("body").on('click', '.remove-form-row',function () {
+    deleteForm($(this), String($('.add-form-row').attr('id')));
+  });
+
+  $("body").on('click', '.add-form-row',function () {
+      return addForm($(this), String($(this).attr('id')));
+  });
 </script>
 
 {% endblock content %}

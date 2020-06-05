@@ -35,7 +35,7 @@ def products(request):
 @login_required
 def sales(request):
     """Lists Sales"""
-    sales = Sale.objects.order_by('sale_date')
+    sales = Sale.objects.order_by('-sale_date')
     context = {'sales': sales}
     return render(request, 'mdpapp/sales.html', context)
 
