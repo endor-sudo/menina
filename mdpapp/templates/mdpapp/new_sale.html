@@ -59,17 +59,6 @@
 <!-- create_normal.html :: part 4 -->
 
 <script type='text/javascript'>
-function updateElementIndex(el, prefix, ndx) {
-    var id_regex = new RegExp('(' + prefix + '-\\d+-)');
-    console.log(id_regex);
-    console.log('Ola');
-    var replacement = prefix + '-' + ndx + '-';
-    console.log(replacement);
-    if ($(el).attr("for")) $(el).attr("for", $(el).attr("for").replace(id_regex,
-    replacement));
-    if (el.id) el.id = el.id.replace(id_regex, replacement);
-    if (el.name) el.name = el.name.replace(id_regex, replacement);
-}
 
 function addForm(btn, prefix) {
     var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
@@ -178,11 +167,56 @@ function deleteForm(btn, prefix) {
           $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
           var i = 0;
           // Go through the forms and set their indices, names and IDs
-          for (formCount = forms.length; i < formCount; i++) {
-              $(forms.get(i)).find('.formset-field').each(function () {
-                  updateElementIndex(this, prefix, i);
-              });
-          }
+          const items = document.querySelectorAll(".item");
+
+        for (var i=0;i<items.length;i++){
+            console.log('item: ', items[i]);
+            var row = items[i];
+            const campos=row.querySelectorAll("input");
+            console.log('row: '+row);
+            console.log(campos.length)
+            for (var j=0;j<campos.length+1;j++){
+                if (j==0){
+                    $(row).find('select').attr({'name': 'form-'+i+'-movement_product', 'id': 'id_form-'+i+'-movement_product'}).removeAttr('checked');
+                    console.log('i do mmovement:'+i);
+                }
+                else if (j==1){
+                    j=j-1
+                    if (i==formCount){
+                        $(campos[j]).attr({'name': 'form-'+i+'-movement_quantity', 'id': 'id_form-'+i+'-movement_quantity'}).val('').removeAttr('checked');
+                    }
+                    else{
+                        $(campos[j]).attr({'name': 'form-'+i+'-movement_quantity', 'id': 'id_form-'+i+'-movement_quantity'}).removeAttr('checked');
+                    }
+                    console.log('campo 1: '+campos[j])
+                    j=j+1
+                }
+                else if (j==2){
+                    j=j-1
+                    if (i==formCount){
+                        $(campos[j]).attr({'name': 'form-'+i+'-movement_purchase_price', 'id': 'id_form-'+i+'-movement_purchase_price'}).val('').removeAttr('checked');
+                    }
+                    else{
+                        $(campos[j]).attr({'name': 'form-'+i+'-movement_purchase_price', 'id': 'id_form-'+i+'-movement_purchase_price'}).removeAttr('checked');
+                    }
+                    console.log('campo 2: '+campos[j])
+                    j=j+1
+                }
+                else if (j==3){
+                    j=j-1
+                    if (i==formCount){
+                        $(campos[j]).attr({'name': 'form-'+i+'-movement_selling_price', 'id': 'id_form-'+i+'-movement_selling_price'}).val('').removeAttr('checked');
+                    }
+                    else{
+                        $(campos[j]).attr({'name': 'form-'+i+'-movement_selling_price', 'id': 'id_form-'+i+'-movement_selling_price'}).removeAttr('checked');
+                    }
+                    console.log('campo 3: '+campos[j])
+                    j=j+1
+                }
+                console.log('j: '+j)
+            }
+            console.log('i: '+i)
+        }
       } // End if
 
       return false;
