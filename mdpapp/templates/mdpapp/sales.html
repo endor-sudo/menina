@@ -1,5 +1,41 @@
 {% extends "mdpapp/base.html" %}
 {% block content %}
+    <div>
+        Vendas totais
+    </div>
+    <div class="container">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        Ano
+                    </th>
+                    <th>
+                        Mês
+                    </th>
+                    <th>
+                        Dia
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        {{ year_sale_total }}
+                    </td>
+                    <td>
+                        {{ month_sale_total }}
+                    </td>
+                    <td>
+                        {{ day_sale_total }}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div>
+        Últimas 5 Vendas
+    </div>
     <div class="container">
         <table class="table table-striped">
             <thead>
@@ -12,7 +48,9 @@
             <tbody>
                 {% for sale in sales %}
                 <tr>
-                    <td style="vertical-align: middle;">{{ sale.client }}</td>
+                    <td style="vertical-align: middle;">
+                        {{ sale.client }}
+                    </td>
                     <td style="vertical-align: middle;">
                         {{ sale.sale_date }}
                     </td>

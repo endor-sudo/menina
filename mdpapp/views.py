@@ -35,8 +35,28 @@ def products(request):
 @login_required
 def sales(request):
     """Lists Sales"""
-    sales = Sale.objects.order_by('-sale_date')
-    context = {'sales': sales}
+    ##### negative indexing is not supported so this is just a workaround to show the last 5 sales
+    total=len(Sale.objects.all())
+    total=total-5
+    sales = Sale.objects.order_by('-sale_date')[total:]
+    #####
+    year_sale=Sale.objects.filter(sale_date__year=2020)
+    year_sale_total=0
+    for sale in year_sale:
+        year_sale_total+=float(sale.sale_total)
+    #
+    month_sale=year_sale.filter(sale_date__month=6)
+    month_sale_total=0
+    for sale in month_sale:
+        month_sale_total+=float(sale.sale_total)
+    #
+    day_sale=month_sale.filter(sale_date__day=4)
+    day_sale_total=0
+    for sale in day_sale:
+        day_sale_total+=float(sale.sale_total)
+    #
+    context = {'sales': sales, 'year_sale_total':year_sale_total, 'month_sale_total':month_sale_total, 'day_sale_total':day_sale_total}
+    print(year_sale_total)
     return render(request, 'mdpapp/sales.html', context)
 
 @login_required
