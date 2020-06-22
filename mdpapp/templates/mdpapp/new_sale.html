@@ -1,234 +1,267 @@
 {% extends "mdpapp/base.html" %}
 {% block content %}
 
-<form method="POST">
-    {% csrf_token %}
-    {{ sale_form.as_p}}
-    
-    <table class="table table-responsive">
-                        <thead class="text-center thead-dark">
-                        <tr>
-                            <th>Produto</th>
-                            <th>Qt.</th>
-                            <th>Preço de Compra</th>
-                            <th>Preço de Venda</th>
-                            <th></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for form in formset %}
-                            <tr class="item">
-                                <td>
-                                    {{ form.movement_product }}
-                                </td>
-                                <td>
-                                    {{ form.movement_quantity }}
-                                </td>
-                                <td>
-                                    {{ form.movement_purchase_price }}
-                                </td>
-                                <td>
-                                    {{ form.movement_selling_price }}
-                                </td>
-                                <td>
-                                    <button type="button" class="btn btn-danger btn-sm remove-form-row"
-                                            id="{{ formset.prefix }}">
-                                      
-                                        Delete
+<style>
+
+    #content {
+        display: none;
+    }
+
+    @media all and (orientation:portrait) {
+        #content {
+            background-color: rgba(0,0,0,1);
+            display: block;
+            height: 100%;
+            position: fixed;
+            top: 0;
+            width: 100%;
+        }
+    }
+
+    #id_form-0-movement_quantity {
+        width: 80px;
+    }
+    #id_form-0-movement_purchase_price {
+        width: 80px;
+    }
+    #id_form-0-movement_selling_price {
+        width: 80px;
+    }
+</style>
+
+<div id="content" class="d-flex justify-content-center">
+    <form method="POST">
+        {% csrf_token %}
+        {{ sale_form.as_p}}
+        
+        <table class="table table-responsive">
+                            <thead class="text-center thead-dark">
+                            <tr>
+                                <th>Pr.</th>
+                                <th>Qt.</th>
+                                <th>PC</th>
+                                <th>PV</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for form in formset %}
+                                <tr class="item">
+                                    <td>
+                                        {{ form.movement_product }}
+                                    </td>
+                                    <td>
+                                        {{ form.movement_quantity }}
+                                    </td>
+                                    <td>
+                                        {{ form.movement_purchase_price }}
+                                    </td>
+                                    <td>
+                                        {{ form.movement_selling_price }}
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-danger btn-sm remove-form-row"
+                                                id="{{ formset.prefix }}">
+                                          
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="d-flex justify-content-center">
+                                    <button type="button" class="btn btn-lg btn-success add-form-row" id="{{ formset.prefix }}">
+                                       Add
                                     </button>
                                 </td>
+                                <td colspan="2"></td>
                             </tr>
-                        {% endfor %}
-                        <tr>
-                            <td colspan="2"></td>
-                            <td class="d-flex justify-content-center">
-                                <button type="button" class="btn btn-lg btn-success add-form-row" id="{{ formset.prefix }}">
-                                   Add
-                                </button>
-                            </td>
-                            <td colspan="2"></td>
-                        </tr>
-                        </tbody>
-                    </table>
-                    {{ formset.management_form }}
-
-    <button type="submit" class="btn btn-primary">Submit</button>
-</form>
+                            </tbody>
+                        </table>
+                        {{ formset.management_form }}
+    
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
 
 
 <!-- handle the form -->
 
 <script type='text/javascript'>
 
-function addForm(btn, prefix) {
-    var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
-    console.log(formCount);
-    console.log(prefix);
-    if (formCount < 1000) {
-        // Clone a form (without event handlers) from the first form
-        var row = $(".item:last").clone(true);
-        console.log(row);
-        
-        // Insert it after the last form
-        $(row).removeAttr('id').hide().insertAfter(".item:last").slideDown(300);
+    function addForm(btn, prefix) {
+        var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+        console.log(formCount);
+        console.log(prefix);
+        if (formCount < 1000) {
+            // Clone a form (without event handlers) from the first form
+            var row = $(".item:last").clone(true);
+            console.log(row);
+            
+            // Insert it after the last form
+            $(row).removeAttr('id').hide().insertAfter(".item:last").slideDown(300);
 
-        // Remove the bits we don't want in the new row/form
-        // e.g. error messages
-        $(".errorlist", row).remove();
-        $(row).children().removeClass("error");
+            // Remove the bits we don't want in the new row/form
+            // e.g. error messages
+            $(".errorlist", row).remove();
+            $(row).children().removeClass("error");
 
-        // Add an event handler for the delete item/form link
-        $(row).find(".delete").click(function () {
-            return deleteForm(this, prefix);
-        });
-        // Update the total form count
-        $("#id_" + prefix + "-TOTAL_FORMS").val(formCount + 1);
-
-
-        const items = document.querySelectorAll(".item");
-
-        for (var i=0;i<items.length;i++){
-            console.log('item: ', items[i]);
-            var row = items[i];
-            const campos=row.querySelectorAll("input");
-            console.log('row: '+row);
-            console.log(campos.length)
-            for (var j=0;j<campos.length+1;j++){
-                if (j==0){
-                    $(row).find('select').attr({'name': 'form-'+i+'-movement_product', 'id': 'id_form-'+i+'-movement_product'}).removeAttr('checked');
-                    console.log('i do mmovement:'+i);
-                }
-                else if (j==1){
-                    j=j-1
-                    if (i==formCount){
-                        $(campos[j]).attr({'name': 'form-'+i+'-movement_quantity', 'id': 'id_form-'+i+'-movement_quantity'}).val('').removeAttr('checked');
-                    }
-                    else{
-                        $(campos[j]).attr({'name': 'form-'+i+'-movement_quantity', 'id': 'id_form-'+i+'-movement_quantity'}).removeAttr('checked');
-                    }
-                    console.log('campo 1: '+campos[j])
-                    j=j+1
-                }
-                else if (j==2){
-                    j=j-1
-                    if (i==formCount){
-                        $(campos[j]).attr({'name': 'form-'+i+'-movement_purchase_price', 'id': 'id_form-'+i+'-movement_purchase_price'}).val('').removeAttr('checked');
-                    }
-                    else{
-                        $(campos[j]).attr({'name': 'form-'+i+'-movement_purchase_price', 'id': 'id_form-'+i+'-movement_purchase_price'}).removeAttr('checked');
-                    }
-                    console.log('campo 2: '+campos[j])
-                    j=j+1
-                }
-                else if (j==3){
-                    j=j-1
-                    if (i==formCount){
-                        $(campos[j]).attr({'name': 'form-'+i+'-movement_selling_price', 'id': 'id_form-'+i+'-movement_selling_price'}).val('').removeAttr('checked');
-                    }
-                    else{
-                        $(campos[j]).attr({'name': 'form-'+i+'-movement_selling_price', 'id': 'id_form-'+i+'-movement_selling_price'}).removeAttr('checked');
-                    }
-                    console.log('campo 3: '+campos[j])
-                    j=j+1
-                }
-                console.log('j: '+j)
-            }
-            console.log('i: '+i)
-        }
-
-    } // End if
-
-    return false;
-}
-
-
-function deleteForm(btn, prefix) {
-      var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
-      if (formCount > 1) {
-          // Delete the item/form
-          var goto_id = $(btn).find('input').val();
-          if( goto_id ){
-            $.ajax({
-                url: "/" + window.location.pathname.split("/")[1] + "/formset-data-delete/"+ goto_id +"/?next="+ window.location.pathname,
-                error: function () {
-                  console.log("error");
-                },
-                success: function (data) {
-                  $(btn).parents('.item').remove();                 
-                },
-                type: 'GET'
+            // Add an event handler for the delete item/form link
+            $(row).find(".delete").click(function () {
+                return deleteForm(this, prefix);
             });
-          }else{
-            $(btn).parents('.item').remove();
-          }
+            // Update the total form count
+            $("#id_" + prefix + "-TOTAL_FORMS").val(formCount + 1);
 
-          var forms = $('.item'); // Get all the forms
-          // Update the total number of forms (1 less than before)
-          $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
-          var i = 0;
-          // Go through the forms and set their indices, names and IDs
-          const items = document.querySelectorAll(".item");
 
-        for (var i=0;i<items.length;i++){
-            console.log('item: ', items[i]);
-            var row = items[i];
-            const campos=row.querySelectorAll("input");
-            console.log('row: '+row);
-            console.log(campos.length)
-            for (var j=0;j<campos.length+1;j++){
-                if (j==0){
-                    $(row).find('select').attr({'name': 'form-'+i+'-movement_product', 'id': 'id_form-'+i+'-movement_product'}).removeAttr('checked');
-                    console.log('i do mmovement:'+i);
+            const items = document.querySelectorAll(".item");
+
+            for (var i=0;i<items.length;i++){
+                console.log('item: ', items[i]);
+                var row = items[i];
+                const campos=row.querySelectorAll("input");
+                console.log('row: '+row);
+                console.log(campos.length)
+                for (var j=0;j<campos.length+1;j++){
+                    if (j==0){
+                        $(row).find('select').attr({'name': 'form-'+i+'-movement_product', 'id': 'id_form-'+i+'-movement_product'}).removeAttr('checked');
+                        console.log('i do mmovement:'+i);
+                    }
+                    else if (j==1){
+                        j=j-1
+                        if (i==formCount){
+                            $(campos[j]).attr({'name': 'form-'+i+'-movement_quantity', 'id': 'id_form-'+i+'-movement_quantity'}).val('').removeAttr('checked');
+                            campos[j].style.width = "80px";
+                        }
+                        else{
+                            $(campos[j]).attr({'name': 'form-'+i+'-movement_quantity', 'id': 'id_form-'+i+'-movement_quantity'}).removeAttr('checked');
+                        }
+                        console.log('campo 1: '+campos[j])
+                        j=j+1
+                    }
+                    else if (j==2){
+                        j=j-1
+                        if (i==formCount){
+                            $(campos[j]).attr({'name': 'form-'+i+'-movement_purchase_price', 'id': 'id_form-'+i+'-movement_purchase_price'}).val('').removeAttr('checked');
+                            campos[j].style.width = "80px";
+                        }
+                        else{
+                            $(campos[j]).attr({'name': 'form-'+i+'-movement_purchase_price', 'id': 'id_form-'+i+'-movement_purchase_price'}).removeAttr('checked');
+                        }
+                        console.log('campo 2: '+campos[j])
+                        j=j+1
+                    }
+                    else if (j==3){
+                        j=j-1
+                        if (i==formCount){
+                            $(campos[j]).attr({'name': 'form-'+i+'-movement_selling_price', 'id': 'id_form-'+i+'-movement_selling_price'}).val('').removeAttr('checked');
+                            campos[j].style.width = "80px";
+                        }
+                        else{
+                            $(campos[j]).attr({'name': 'form-'+i+'-movement_selling_price', 'id': 'id_form-'+i+'-movement_selling_price'}).removeAttr('checked');
+                        }
+                        console.log('campo 3: '+campos[j])
+                        j=j+1
+                    }
+                    console.log('j: '+j)
                 }
-                else if (j==1){
-                    j=j-1
-                    if (i==formCount){
-                        $(campos[j]).attr({'name': 'form-'+i+'-movement_quantity', 'id': 'id_form-'+i+'-movement_quantity'}).val('').removeAttr('checked');
-                    }
-                    else{
-                        $(campos[j]).attr({'name': 'form-'+i+'-movement_quantity', 'id': 'id_form-'+i+'-movement_quantity'}).removeAttr('checked');
-                    }
-                    console.log('campo 1: '+campos[j])
-                    j=j+1
-                }
-                else if (j==2){
-                    j=j-1
-                    if (i==formCount){
-                        $(campos[j]).attr({'name': 'form-'+i+'-movement_purchase_price', 'id': 'id_form-'+i+'-movement_purchase_price'}).val('').removeAttr('checked');
-                    }
-                    else{
-                        $(campos[j]).attr({'name': 'form-'+i+'-movement_purchase_price', 'id': 'id_form-'+i+'-movement_purchase_price'}).removeAttr('checked');
-                    }
-                    console.log('campo 2: '+campos[j])
-                    j=j+1
-                }
-                else if (j==3){
-                    j=j-1
-                    if (i==formCount){
-                        $(campos[j]).attr({'name': 'form-'+i+'-movement_selling_price', 'id': 'id_form-'+i+'-movement_selling_price'}).val('').removeAttr('checked');
-                    }
-                    else{
-                        $(campos[j]).attr({'name': 'form-'+i+'-movement_selling_price', 'id': 'id_form-'+i+'-movement_selling_price'}).removeAttr('checked');
-                    }
-                    console.log('campo 3: '+campos[j])
-                    j=j+1
-                }
-                console.log('j: '+j)
+                console.log('i: '+i)
             }
-            console.log('i: '+i)
-        }
-      } // End if
 
-      return false;
-  }
+        } // End if
 
-  $("body").on('click', '.remove-form-row',function () {
-    deleteForm($(this), String($('.add-form-row').attr('id')));
-  });
+        return false;
+    }
 
-  $("body").on('click', '.add-form-row',function () {
-      return addForm($(this), String($(this).attr('id')));
-  });
+
+    function deleteForm(btn, prefix) {
+        var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+        if (formCount > 1) {
+            // Delete the item/form
+            var goto_id = $(btn).find('input').val();
+            if( goto_id ){
+                $.ajax({
+                    url: "/" + window.location.pathname.split("/")[1] + "/formset-data-delete/"+ goto_id +"/?next="+ window.location.pathname,
+                    error: function () {
+                    console.log("error");
+                    },
+                    success: function (data) {
+                    $(btn).parents('.item').remove();                 
+                    },
+                    type: 'GET'
+                });
+            }else{
+                $(btn).parents('.item').remove();
+            }
+
+            var forms = $('.item'); // Get all the forms
+            // Update the total number of forms (1 less than before)
+            $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
+            var i = 0;
+            // Go through the forms and set their indices, names and IDs
+            const items = document.querySelectorAll(".item");
+
+            for (var i=0;i<items.length;i++){
+                console.log('item: ', items[i]);
+                var row = items[i];
+                const campos=row.querySelectorAll("input");
+                console.log('row: '+row);
+                console.log(campos.length)
+                for (var j=0;j<campos.length+1;j++){
+                    if (j==0){
+                        $(row).find('select').attr({'name': 'form-'+i+'-movement_product', 'id': 'id_form-'+i+'-movement_product'}).removeAttr('checked');
+                        console.log('i do mmovement:'+i);
+                    }
+                    else if (j==1){
+                        j=j-1
+                        if (i==formCount){
+                            $(campos[j]).attr({'name': 'form-'+i+'-movement_quantity', 'id': 'id_form-'+i+'-movement_quantity'}).val('').removeAttr('checked');
+                        }
+                        else{
+                            $(campos[j]).attr({'name': 'form-'+i+'-movement_quantity', 'id': 'id_form-'+i+'-movement_quantity'}).removeAttr('checked');
+                        }
+                        console.log('campo 1: '+campos[j])
+                        j=j+1
+                    }
+                    else if (j==2){
+                        j=j-1
+                        if (i==formCount){
+                            $(campos[j]).attr({'name': 'form-'+i+'-movement_purchase_price', 'id': 'id_form-'+i+'-movement_purchase_price'}).val('').removeAttr('checked');
+                        }
+                        else{
+                            $(campos[j]).attr({'name': 'form-'+i+'-movement_purchase_price', 'id': 'id_form-'+i+'-movement_purchase_price'}).removeAttr('checked');
+                        }
+                        console.log('campo 2: '+campos[j])
+                        j=j+1
+                    }
+                    else if (j==3){
+                        j=j-1
+                        if (i==formCount){
+                            $(campos[j]).attr({'name': 'form-'+i+'-movement_selling_price', 'id': 'id_form-'+i+'-movement_selling_price'}).val('').removeAttr('checked');
+                        }
+                        else{
+                            $(campos[j]).attr({'name': 'form-'+i+'-movement_selling_price', 'id': 'id_form-'+i+'-movement_selling_price'}).removeAttr('checked');
+                        }
+                        console.log('campo 3: '+campos[j])
+                        j=j+1
+                    }
+                    console.log('j: '+j)
+                }
+                console.log('i: '+i)
+            }
+        } // End if
+
+        return false;
+    }
+
+    $("body").on('click', '.remove-form-row',function () {
+        deleteForm($(this), String($('.add-form-row').attr('id')));
+    });
+
+    $("body").on('click', '.add-form-row',function () {
+        return addForm($(this), String($(this).attr('id')));
+    });
 </script>
 
 {% endblock content %}

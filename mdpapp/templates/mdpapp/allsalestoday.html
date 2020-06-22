@@ -3,44 +3,7 @@
     <div class="container">
         <table class="table table-striped">
             <caption>
-                Totais Período
-            </caption>
-            <thead>
-                <tr>
-                    <th>
-                        Ano
-                    </th>
-                    <th>
-                        Mês
-                    </th>
-                    <th>
-                        Dia
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        {{ year_sale_total }}€
-                    </td>
-                    <td>
-                        {{ month_sale_total }}€
-                    </td>
-                    <td>
-                        <a href="{% url 'td_sales' %}">
-                            <button type="button" class="btn btn-dark">
-                                {{ day_sale_total }}€
-                            </button>
-                        </a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="container">
-        <table class="table table-striped">
-            <caption>
-                Últimas 5 Vendas
+                Todas as vendas de Hoje
             </caption>
             <thead>
                 <tr>
@@ -50,7 +13,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for sale in sales %}
+                {% for sale in todaysales %}
                 <tr>
                     <td style="vertical-align: middle;">
                         {{ sale.client }}

@@ -13,6 +13,8 @@ urlpatterns = [
     path('dblists/products/', views.products, name='products'),
     # List Sales
     path('dblists/sales/', views.sales, name='sales'),
+    # All sales of today
+    path('dblists/td_sales/', views.todays_sales, name='td_sales'),
     # List Movements in a Sale
     path('dblists/sales/<int:sale_id>/', views.sale, name='sale'),
     # Choose what to create
