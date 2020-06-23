@@ -14,6 +14,10 @@ from .forms import SaleForm
 
 import datetime
 
+from django.db.models import Sum
+
+import math
+
 def index(request):
     return render(request, 'mdpapp/index.html')
 
@@ -57,16 +61,38 @@ def sales(request):
     for sale in day_sale:
         day_sale_total+=float(sale.sale_total)
     #
-    context = {'sales': sales, 'year_sale_total':year_sale_total, 'month_sale_total':month_sale_total, 'day_sale_total':day_sale_total}
+    hoje=today.day
+    context = {'sales': sales, 'year_sale_total':year_sale_total, 'month_sale_total':month_sale_total, 'day_sale_total':day_sale_total, 'hoje':hoje}
     print(year_sale_total)
     return render(request, 'mdpapp/sales.html', context)
 
 @login_required
-def todays_sales(request):
-    today=datetime.datetime.now()
-    todaysales = Sale.objects.order_by('sale_date').filter(sale_date__day=today.day)
-    context = {'todaysales': todaysales}
+def todays_sales(request, dia, page):
+    today=dia
+    todaysales = Sale.objects.order_by('-sale_date').filter(sale_date__day=today)
+    bunches=math.ceil(len(todaysales)/5)
+    end=5*page
+    start=end-5
+    todaysales=todaysales[start:end]
+    context = {'todaysales': todaysales, 'today':today, 'range':range(1,bunches+1)}
     return render(request, 'mdpapp/allsalestoday.html', context)
+
+@login_required
+def months_sales(request):
+    today=datetime.datetime.now()
+    monthsales = Sale.objects.order_by('-sale_date').filter(sale_date__month=today.month)
+    days_total={}
+    i=0
+    for i in range(1,32):
+        day_total=monthsales.filter(sale_date__day=i).aggregate(Sum('sale_total'))
+        if day_total['sale_total__sum']:
+            days_total[i]=day_total['sale_total__sum']
+    print('days_total')
+    print(days_total)
+    mes=today.month
+    ano=today.year
+    context = {'days_total': days_total, 'mes':mes, 'ano':ano}
+    return render(request, 'mdpapp/allsalesmonth.html', context)
 
 @login_required
 def sale(request, sale_id):

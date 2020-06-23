@@ -14,7 +14,9 @@ urlpatterns = [
     # List Sales
     path('dblists/sales/', views.sales, name='sales'),
     # All sales of today
-    path('dblists/td_sales/', views.todays_sales, name='td_sales'),
+    path('dblists/td_sales/<int:dia>/<int:page>/', views.todays_sales, name='td_sales'),
+    # All sales of the month
+    path('dblists/mn_sales/', views.months_sales, name='mn_sales'),
     # List Movements in a Sale
     path('dblists/sales/<int:sale_id>/', views.sale, name='sale'),
     # Choose what to create

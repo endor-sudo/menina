@@ -24,10 +24,14 @@
                         {{ year_sale_total }}€
                     </td>
                     <td>
-                        {{ month_sale_total }}€
+                        <a href="{% url 'mn_sales' %}">
+                            <button type="button" class="btn btn-dark">
+                                {{ month_sale_total }}€
+                            </button>
+                        </a>
                     </td>
                     <td>
-                        <a href="{% url 'td_sales' %}">
+                        <a href="{% url 'td_sales' hoje 1 %}">
                             <button type="button" class="btn btn-dark">
                                 {{ day_sale_total }}€
                             </button>
