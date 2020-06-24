@@ -21,10 +21,14 @@
             <tbody>
                 <tr>
                     <td>
-                        {{ year_sale_total }}€
+                        <a href="{% url 'yr_sales' %}">
+                            <button type="button" class="btn btn-dark">
+                                {{ year_sale_total }}€
+                            </button>
+                        </a>
                     </td>
                     <td>
-                        <a href="{% url 'mn_sales' %}">
+                        <a href="{% url 'mn_sales' mes %}">
                             <button type="button" class="btn btn-dark">
                                 {{ month_sale_total }}€
                             </button>

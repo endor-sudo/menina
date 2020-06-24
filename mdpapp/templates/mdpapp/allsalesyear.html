@@ -1,0 +1,38 @@
+{% extends "mdpapp/base.html" %}
+{% block content %}
+    <div class="container">
+        <table class="table table-striped">
+            <caption>
+                Todas as vendas deste Ano ({{ano}})
+            </caption>
+            <thead>
+                <tr>
+                    <th>Dia</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for k,v in days_total.items %}
+                <tr>
+                    <td style="vertical-align: middle;">
+                        <a href="{% url 'mn_sales' k %}">
+                            <button type="button" class="btn btn-dark">
+                                {{ k }}
+                            </button>
+                        </a>
+                    </td>
+                    <td style="vertical-align: middle;">
+                        {{ v }}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td>No sales have been made.</td>
+                </tr>
+                {% endfor %}
+                <tr></tr>
+            </tbody>
+        </table>
+    </div>
+{% endblock content %}
+

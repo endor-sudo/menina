@@ -62,7 +62,8 @@ def sales(request):
         day_sale_total+=float(sale.sale_total)
     #
     hoje=today.day
-    context = {'sales': sales, 'year_sale_total':year_sale_total, 'month_sale_total':month_sale_total, 'day_sale_total':day_sale_total, 'hoje':hoje}
+    mes=today.month
+    context = {'sales': sales, 'year_sale_total':year_sale_total, 'month_sale_total':month_sale_total, 'day_sale_total':day_sale_total, 'hoje':hoje, 'mes':mes}
     print(year_sale_total)
     return render(request, 'mdpapp/sales.html', context)
 
@@ -78,9 +79,9 @@ def todays_sales(request, dia, page):
     return render(request, 'mdpapp/allsalestoday.html', context)
 
 @login_required
-def months_sales(request):
+def months_sales(request, month):
     today=datetime.datetime.now()
-    monthsales = Sale.objects.order_by('-sale_date').filter(sale_date__month=today.month)
+    monthsales = Sale.objects.order_by('-sale_date').filter(sale_date__month=month)
     days_total={}
     i=0
     for i in range(1,32):
@@ -89,10 +90,26 @@ def months_sales(request):
             days_total[i]=day_total['sale_total__sum']
     print('days_total')
     print(days_total)
-    mes=today.month
+    mes=month
     ano=today.year
     context = {'days_total': days_total, 'mes':mes, 'ano':ano}
     return render(request, 'mdpapp/allsalesmonth.html', context)
+
+@login_required
+def years_sales(request):
+    today=datetime.datetime.now()
+    yearsales = Sale.objects.order_by('-sale_date').filter(sale_date__year=today.year)
+    days_total={}
+    i=0
+    for i in range(1,13):
+        day_total=yearsales.filter(sale_date__month=i).aggregate(Sum('sale_total'))
+        if day_total['sale_total__sum']:
+            days_total[i]=day_total['sale_total__sum']
+    print('days_total')
+    print(days_total)
+    ano=today.year
+    context = {'days_total': days_total, 'ano':ano}
+    return render(request, 'mdpapp/allsalesyear.html', context)
 
 @login_required
 def sale(request, sale_id):

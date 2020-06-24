@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -10,6 +11,8 @@
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
 
+        <link rel="stylesheet" href="{% static 'mdpapp/main.css' %}">
+
         <!-- jQuery library -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
@@ -18,13 +21,20 @@
 
         <!-- Latest compiled JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+        <!-- favicon -->
+        <link rel="shortcut icon" type="image/png" href="{% static 'mdpapp/favicon.ico' %}"/>
+
     </head>
     <body>
         <!-- Header -->
-        <header class="container-fluid p-3 bg-dark d-flex justify-content-center">
+        <header class="container-fluid p-3 d-flex justify-content-center">
             <!-- Brand -->
             <a class="text-white navbar-brand" href="{% url 'index' %}">
-                <h1>Menina do Peixe</h1>
+                <h1>
+                    Menina do Peixe
+                    <img src="{% static 'mdpapp/favicon.ico' %}" alt="alt">
+                </h1>
             </a>
         </header>
         <!-- Middle section -->
@@ -32,6 +42,6 @@
             {% block content %}{% endblock content %}
         </div>
         <!-- Footer -->
-        <footer class="container-fluid p-3 bg-dark text-white fixed-bottom d-flex justify-content-end" >©antonio_freitas_2020</footer>
+        <footer class="container-fluid p-3 text-white fixed-bottom d-flex justify-content-end" >©antonio_freitas_2020</footer>
     </body>
 </html>
