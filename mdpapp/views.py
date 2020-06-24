@@ -18,8 +18,6 @@ from django.db.models import Sum
 
 import math
 
-from django.db import models 
-
 def index(request):
     return render(request, 'mdpapp/index.html')
 
@@ -104,7 +102,8 @@ def years_sales(request):
     days_total={}
     i=0
     for i in range(1,13):
-        day_total=yearsales.filter(sale_date__month=i).aggregate(Sum('sale_total', output_field=models.FloatField()))
+        dia=yearsales.filter(sale_date__month=i)
+        day_total=dia.aggregate(Sum('sale_total'))
         if day_total['sale_total__sum']:
             days_total[i]=day_total['sale_total__sum']
     print('days_total')
