@@ -79,12 +79,12 @@
     }
 </style>
 
-<div id="content" class="d-flex justify-content-center">
+<div style="color: #fff;" id="content" class="d-flex justify-content-center">
     <form method="POST">
         {% csrf_token %}
         {{ sale_form.as_p}}
         
-        <table class="table table-responsive">
+        <table class="table table-dark table-striped table-responsive">
                             <thead class="text-center thead-dark">
                             <tr>
                                 <th>Pr.</th>
@@ -119,23 +119,21 @@
                                 </tr>
                             {% endfor %}
                             <tr>
-                                <td colspan="4"></td>
+                                <td colspan="2"></td>
                                 <td class="d-flex justify-content-center">
                                     <button type="button" class="btn btn-lg btn-success add-form-row" id="{{ formset.prefix }}">
                                        Add
                                     </button>
+                                </td>
+                                <td colspan="2" id="result">
+                                    Total
                                 </td>
                             </tr>
                             </tbody>
                         </table>
                         {{ formset.management_form }}
     
-        <button type="submit" class="btn btn-primary btn-lg">Submit</button>
-        <a href="{% url 'delete_sale' sale.id %}">
-            <button type="button" class="btn btn-danger btn-lg">
-                DELETE
-            </button>
-        </a>
+        <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 </div>
 
@@ -311,11 +309,42 @@
 
     $("body").on('click', '.remove-form-row',function () {
         deleteForm($(this), String($('.add-form-row').attr('id')));
+        var qts=$("[id^=id_form-][id$=-movement_quantity]");
+        var prs=$("[id^=id_form-][id$=-movement_selling_price]");
+        var total=0;
+        console.log(qts);
+        for (i=0;i<qts.length;++i){
+            total=total+$(qts[i]).val()*$(prs[i]).val();
+        }
+        $('#result').text("Total   "+total);
     });
 
     $("body").on('click', '.add-form-row',function () {
         return addForm($(this), String($(this).attr('id')));
     });
+
+    $('[id^=id_form-]').change(function(){
+        var qts=$("[id^=id_form-][id$=-movement_quantity]");
+        var prs=$("[id^=id_form-][id$=-movement_selling_price]");
+        var total=0;
+        console.log(qts);
+        for (i=0;i<qts.length;++i){
+            total=total+$(qts[i]).val()*$(prs[i]).val();
+        }
+        $('#result').text("Total   "+total);
+    });
+
+    $(document).ready(function(){
+        var qts=$("[id^=id_form-][id$=-movement_quantity]");
+        var prs=$("[id^=id_form-][id$=-movement_selling_price]");
+        var total=0;
+        console.log(qts);
+        for (i=0;i<qts.length;++i){
+            total=total+$(qts[i]).val()*$(prs[i]).val();
+        }
+        $('#result').text("Total   "+total);
+    });
+
 </script>
 
 {% endblock content %}
