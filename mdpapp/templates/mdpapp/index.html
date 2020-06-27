@@ -2,33 +2,29 @@
 {% block content %}
 
 {% if user.is_authenticated %}
-<div class="d-flex justify-content-between">
+<div class="d-flex justify-content-between" style="color: aquamarine;">
     <div> Olá, {{ user.username }} </div> 
     <div><a href="{% url 'user:logout' %}"><button type="button" class="btn btn-dark">log out</button></a></div>
 </div>
-<table class="d-flex justify-content-center">
-    <tr>
-        <td class="d-flex justify-content-center">
-            <a href="{% url 'dblists' %}">
-                <button type="button" class="btn btn-light">
-                    <h2>
-                        Consultar
-                    </h2>
-                </button>
-            </a>
-        </td>
-    </tr>
-        <td class="d-flex justify-content-center">
-            <a href="{% url 'creation' %}">
-                <button type="button" class="btn btn-light">
-                    <h2>
-                        Lançar
-                    </h2>
-                </button>
-            </a>
-        </td>
-    </tr>
-</table>
+    
+<div style="margin-top: 1rem;">
+    <a href="{% url 'dblists' %}" class="nounderline">
+        <button type="button" class="btn btn-dark btn-block" style="height: 100px">
+            <h2>
+                Consultar
+            </h2>
+        </button>
+    </a>
+</div>
+<div style="margin-top: 1rem;">
+    <a href="{% url 'creation' %}" class="nounderline">
+        <button type="button" class="btn btn-dark btn-block" style="height: 100px">
+            <h2>
+                Lançar
+            </h2>
+        </button>
+    </a>
+</div>
 {% else %}
     <a class="d-flex justify-content-center" href="{% url 'user:login' %}"><button type="button" class="btn btn-dark">log in</button></a>
 {% endif %}

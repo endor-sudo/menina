@@ -2,8 +2,8 @@
 {% block content %}
 
 
-<p>Crie um NOVO PRODUTO:</p>
-<form action="{% url 'product_creation' %}" method='post'> 
+<p style="color: #fff">Crie um NOVO PRODUTO:</p>
+<form action="{% url 'product_creation' %}" method='post' style="color: #fff"> 
     {% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value="Submit">

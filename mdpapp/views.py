@@ -63,7 +63,8 @@ def sales(request):
     #
     hoje=today.day
     mes=today.month
-    context = {'sales': sales, 'year_sale_total':year_sale_total, 'month_sale_total':month_sale_total, 'day_sale_total':day_sale_total, 'hoje':hoje, 'mes':mes}
+    context = {'sales': sales, 'year_sale_total':year_sale_total, 'month_sale_total':month_sale_total, 
+    'day_sale_total':day_sale_total, 'hoje':hoje, 'mes':mes}
     print(year_sale_total)
     return render(request, 'mdpapp/sales.html', context)
 
@@ -122,8 +123,73 @@ def sale(request, sale_id):
         raise Http404
     """
     movements = sale.movement_set.order_by('id')
-    context = {'sale': sales, 'movements': movements}
+    context = {'sale': sale, 'movements': movements}
     return render(request, 'mdpapp/sale.html', context)
+
+@login_required
+def edit_sale(request, sale_id):
+    """Edit or delete movements in a sale"""
+    #determines sale instance 
+    sale = Sale.objects.get(id=sale_id)
+    #fabricates the form
+    movement_formset = modelformset_factory(Movement, exclude=('sale',), extra=0)
+    if request.method!='POST':
+        formset = movement_formset(queryset=sale.movement_set.all())
+        context = {'formset': formset, 'sale':sale}
+        return render(request, 'mdpapp/edit_sale.html', context)
+    else:
+        #populates the formset
+        formset = movement_formset(request.POST, request.FILES, queryset=Movement.objects.none())
+        formset.is_valid()
+
+        #checks for blanks before deleting the outdate movements
+        for form in formset:
+            try:
+                mov_dict=form.cleaned_data
+                #instantiates the Movement...
+                movement_=Movement(sale=sale, movement_product=mov_dict['movement_product'],
+                movement_quantity=mov_dict['movement_quantity'],
+                movement_purchase_price=mov_dict['movement_purchase_price'],
+                movement_selling_price=mov_dict['movement_selling_price'])
+            except KeyError:
+                return HttpResponseRedirect(reverse('edit_sale', args=[sale.id]))
+
+        #grabs the outdated movements
+        old_movs=sale.movement_set.all()
+        #and deletes them
+        for old_mov in old_movs:
+            old_mov.delete()
+        for form in formset:
+            mov_dict=form.cleaned_data
+            #instantiates the Movement...
+            movement_=Movement(sale=sale, movement_product=mov_dict['movement_product'],
+            movement_quantity=mov_dict['movement_quantity'],
+            movement_purchase_price=mov_dict['movement_purchase_price'],
+            movement_selling_price=mov_dict['movement_selling_price'])
+            movement_.save()
+
+        #updates sale total
+        sale_total=[]
+        for form in formset:
+            #cleans the movement_form to be used as kwargs in the Movement instantiation
+            mov_dict=form.cleaned_data
+            try:
+                sale_total.append(float(mov_dict['movement_quantity'])*float(mov_dict['movement_selling_price']))
+            except KeyError:
+                pass
+        sale.sale_total=round(sum(sale_total),3)
+        #saves sale
+        sale.save()
+
+        return HttpResponseRedirect(reverse('sales'))
+
+@login_required
+def delete_sale(request, sale_id):
+    """Delete a sale"""
+    #determines sale instance 
+    sale = Sale.objects.get(id=sale_id)
+    sale.delete()
+    return HttpResponseRedirect(reverse('sales'))
 
 @login_required
 def create(request):
@@ -218,12 +284,14 @@ def create_sale(request):
                 try:
                     #instantiates the Movement...
                     movement_=Movement(sale=sale_instance, movement_product=mov_dict['movement_product'],
-                    movement_quantity=mov_dict['movement_quantity'],movement_purchase_price=mov_dict['movement_purchase_price'],
+                    movement_quantity=mov_dict['movement_quantity'],
+                    movement_purchase_price=mov_dict['movement_purchase_price'],
                     movement_selling_price=mov_dict['movement_selling_price'])
                 except KeyError:
                     if it==0:
                         sale_instance.delete()
-                        return HttpResponseRedirect(reverse('sale_creation'))#adicionar a nota de que não podem haver vendas sem produtos
+                        #adicionar a nota de que não podem haver vendas sem produtos
+                        return HttpResponseRedirect(reverse('sale_creation'))
                 #...and saves it
                 movement_.save()
                 it+=1

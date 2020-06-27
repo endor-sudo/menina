@@ -21,6 +21,10 @@ urlpatterns = [
     path('dblists/yr_sales/', views.years_sales, name='yr_sales'),
     # List Movements in a Sale
     path('dblists/sales/<int:sale_id>/', views.sale, name='sale'),
+    # Edit or delete movements in a sale
+    path('dblists/sales/<int:sale_id>/edit/', views.edit_sale, name='edit_sale'),
+    # Deletes Sale
+    path('dblists/sales/<int:sale_id>/edit/delete', views.delete_sale, name='delete_sale'),
     # Choose what to create
     path('lancar/', views.create, name='creation'),
     # Create Client
