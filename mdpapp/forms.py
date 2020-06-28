@@ -21,9 +21,10 @@ class ProductForm(forms.ModelForm):
         fields = ['product_name', 'product_family', 'product_note']
 
 class SaleForm(forms.ModelForm):
+    cliente = forms.ModelChoiceField(queryset=Client.objects.order_by('client_name'))
     class Meta:
         model = Sale
-        fields = ['client', 'sale_note']
+        fields = ['cliente', 'sale_note']
 
 class MovementForm(forms.ModelForm):
     class Meta:

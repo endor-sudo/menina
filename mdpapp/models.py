@@ -29,6 +29,8 @@ class Product(models.Model):
     product_date_added=models.DateTimeField("Data Adicionado", auto_now_add=True)
     def __str__(self):
         return self.product_name
+    class Meta:
+        ordering = ['product_name']
 
 class Sale(models.Model):
     """fishgirl's sales"""

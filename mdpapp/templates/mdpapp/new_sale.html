@@ -1,21 +1,9 @@
 {% extends "mdpapp/base.html" %}
 {% block content %}
-
 <style>
 
-    #content {
+    div {
         display: none;
-    }
-
-    @media all and (orientation:portrait) {
-        #content {
-            background-color: rgba(0,0,0,1);
-            display: block;
-            height: 100%;
-            position: fixed;
-            top: 0;
-            width: 100%;
-        }
     }
 
     #id_form-0-movement_quantity {
@@ -29,7 +17,7 @@
     }
 </style>
 
-<div style="color: #fff;" id="content" class="d-flex justify-content-center">
+<div style="color: #fff;" class="d-flex justify-content-center">
     <form method="POST">
         {% csrf_token %}
         {{ sale_form.as_p}}
@@ -86,7 +74,6 @@
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 </div>
-
 
 <!-- handle the form -->
 
@@ -284,6 +271,44 @@
         $('#result').text("Total   "+total);
     });
 
+    $(document).ready(function () {
+        var height = $(window).height();
+        var width = $(window).width(); 
+        if (height < width) {
+            $(document).ready(function(){
+                $("div").show();
+                console.log('div hide width is : ' + width);
+                console.log('height is : ' + height);
+            });
+        }
+        else{
+            $(document.body).append("<p id='temp'>Turn your screen sideways for optimal workflow</p>")
+            $('#temp').css({"color": "white", "font-size": "150%", "text-align":"center"});
+            $('#temp').addClass("d-flex p-3 justify-content-center");
+        }
+    });
+
+    $(window).resize(function () {
+        var height = $(window).height();
+        var width = $(window).width(); 
+        if (height > width) {
+            $(document).ready(function(){
+                $("div").hide();
+                $(document.body).append("<p id='temp'>Turn your screen sideways for optimal workflow</p>")
+                $('#temp').css({"color": "white", "font-size": "150%", "text-align":"center"});
+                $('#temp').addClass("d-flex p-3 justify-content-center");
+            });
+        }
+        else {
+            $(document).ready(function(){
+                $('#temp').remove();
+                $("div").show();
+            });  
+        }
+    });
+
 </script>
 
 {% endblock content %}
+
+{% block footer %}{% endblock %}

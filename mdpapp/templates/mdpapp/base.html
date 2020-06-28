@@ -31,6 +31,7 @@
     </head>
     <body>
         <!-- Header -->
+        {% block header %}
         <header class="container-fluid p-3 d-flex justify-content-center">
             <!-- Brand -->
             <a class="text-white navbar-brand" href="{% url 'index' %}">
@@ -40,11 +41,12 @@
                 </h1>
             </a>
         </header>
+        {% endblock %}
         <!-- Middle section -->
         <div class="container-fluid p-3" style="margin-bottom: 4em;">
             {% block content %}{% endblock content %}
         </div>
         <!-- Footer -->
-        <footer class="container-fluid p-3 text-white fixed-bottom d-flex justify-content-end" >©antonio_freitas_2020</footer>
+        {% block footer %}<footer class="container-fluid p-3 text-white fixed-bottom d-flex justify-content-end" >©antonio_freitas_2020</footer>{% endblock %}
     </body>
 </html>
