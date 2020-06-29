@@ -293,6 +293,7 @@
         if (height > width) {
             $(document).ready(function(){
                 $("div").hide();
+                /*prevent this from duplicating images*/
                 $(document.body).append("{%load static%}<img id='temp' src='{% static 'mdpapp/rotate.png'%}'>")
                 $('#temp').css({'margin':'auto'});
                 $('#temp').addClass("d-flex p-3 justify-content-center");

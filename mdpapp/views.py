@@ -61,9 +61,9 @@ def sales(request):
     for sale in day_sale:
         day_sale_total+=float(sale.sale_total)
     #
-    round(year_sale_total,3)#check if this round is right
-    round(month_sale_total,3)
-    round(day_sale_total,3)
+    year_sale_total=round(year_sale_total,3)#check if this round is right
+    month_sale_total=round(month_sale_total,3)
+    day_sale_total=round(day_sale_total,3)
     hoje=today.day
     mes=today.month
     context = {'sales': sales, 'year_sale_total':year_sale_total, 'month_sale_total':month_sale_total, 
