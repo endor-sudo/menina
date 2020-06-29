@@ -334,17 +334,43 @@
         $('#result').text("Total   "+total);
     });
 
-    $(document).ready(function(){
-        var qts=$("[id^=id_form-][id$=-movement_quantity]");
-        var prs=$("[id^=id_form-][id$=-movement_selling_price]");
-        var total=0;
-        console.log(qts);
-        for (i=0;i<qts.length;++i){
-            total=total+$(qts[i]).val()*$(prs[i]).val();
+    $(document).ready(function () {
+        var height = $(window).height();
+        var width = $(window).width(); 
+        if (height < width) {
+            $(document).ready(function(){
+                $("div").show();
+                $('#temp').remove();
+            });
         }
-        $('#result').text("Total   "+total);
+        else{
+            $(document.body).append("{%load static%}<img id='temp' src='{% static 'mdpapp/rotate.png'%}'>")
+            $('#temp').css({'margin':'auto'});
+            $('#temp').addClass("d-flex p-3 justify-content-center");
+        }
+    });
+
+    $(window).resize(function () {
+        var height = $(window).height();
+        var width = $(window).width(); 
+        if (height > width) {
+            $(document).ready(function(){
+                $("div").hide();
+                $(document.body).append("{%load static%}<img id='temp' src='{% static 'mdpapp/rotate.png'%}'>")
+                $('#temp').css({'margin':'auto'});
+                $('#temp').addClass("d-flex p-3 justify-content-center");
+            });
+        }
+        else {
+            $(document).ready(function(){
+                $('#temp').remove();
+                $("div").show();
+            });  
+        }
     });
 
 </script>
 
 {% endblock content %}
+
+{% block footer %}{% endblock %}
