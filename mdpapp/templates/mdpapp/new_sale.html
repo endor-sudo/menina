@@ -277,13 +277,12 @@
         if (height < width) {
             $(document).ready(function(){
                 $("div").show();
-                console.log('div hide width is : ' + width);
-                console.log('height is : ' + height);
+                $('#temp').remove();
             });
         }
         else{
-            $(document.body).append("<p id='temp'>Turn your screen sideways for optimal workflow</p>")
-            $('#temp').css({"color": "white", "font-size": "150%", "text-align":"center"});
+            $(document.body).append("{%load static%}<img id='temp' src='{% static 'mdpapp/rotate.png'%}'>")
+            $('#temp').css({'margin':'auto'});
             $('#temp').addClass("d-flex p-3 justify-content-center");
         }
     });
@@ -294,8 +293,8 @@
         if (height > width) {
             $(document).ready(function(){
                 $("div").hide();
-                $(document.body).append("<p id='temp'>Turn your screen sideways for optimal workflow</p>")
-                $('#temp').css({"color": "white", "font-size": "150%", "text-align":"center"});
+                $(document.body).append("{%load static%}<img id='temp' src='{% static 'mdpapp/rotate.png'%}'>")
+                $('#temp').css({'margin':'auto'});
                 $('#temp').addClass("d-flex p-3 justify-content-center");
             });
         }
