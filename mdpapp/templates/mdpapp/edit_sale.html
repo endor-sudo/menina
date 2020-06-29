@@ -369,6 +369,12 @@
         }
     });
 
+    $(document).ready(function(){
+        $("#id_sale_note").addClass("form-control");
+        $('[id^=id_form-]').addClass("form-control");
+        $('#id_client').addClass("form-control");
+    });
+
 </script>
 
 {% endblock content %}
