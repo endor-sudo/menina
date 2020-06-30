@@ -18,6 +18,8 @@ from django.db.models import Sum
 
 import math
 
+import pygal
+
 def index(request):
     return render(request, 'mdpapp/index.html')
 
@@ -41,6 +43,38 @@ def products(request):
 
 @login_required
 def sales(request):
+    """render chart"""
+    today=datetime.datetime.now()
+    sales = Sale.objects.order_by('sale_date')
+    days=[x for x in range(31)]
+    bar=[]
+    for day in days:
+        check_day=today.day
+        check_month=today.month
+        check_year=today.year
+        try:
+            check_day=check_day-day
+            if check_day<=0:
+                check_day+=31
+                check_month=check_month-1
+                if check_month<=0:
+                    check_month=12
+                    check_year=check_year-1
+            datetime.datetime(year=today.year, month=check_month, day=check_day)
+        except ValueError:
+            pass
+        else:
+            total_day=Sale.objects.order_by('sale_date').filter(sale_date__year=check_year).filter(sale_date__month=check_month).filter(sale_date__day=check_day).aggregate(Sum('sale_total'))
+            bar.append(total_day['sale_total__sum'])
+
+    bar2=[]
+    for data in reversed(bar):
+        bar2.append(data)
+    print(bar2)
+
+    bar_chart = pygal.Bar()
+    bar_chart.add('Últimos mês', bar2)
+    bar_chart.render_to_file('mdpapp/static/mdpapp/bar_chart.svg')
     """Lists Sales"""
     today=datetime.datetime.now()
     ##### negative indexing is not supported so this is just a workaround to show the last 5 sales
@@ -61,14 +95,13 @@ def sales(request):
     for sale in day_sale:
         day_sale_total+=float(sale.sale_total)
     #
-    year_sale_total=round(year_sale_total,3)#check if this round is right
-    month_sale_total=round(month_sale_total,3)
-    day_sale_total=round(day_sale_total,3)
+    year_sale_total=round(year_sale_total,2)#check if this round is right
+    month_sale_total=round(month_sale_total,2)
+    day_sale_total=round(day_sale_total,2)
     hoje=today.day
     mes=today.month
     context = {'sales': sales, 'year_sale_total':year_sale_total, 'month_sale_total':month_sale_total, 
     'day_sale_total':day_sale_total, 'hoje':hoje, 'mes':mes}
-    print(year_sale_total)
     return render(request, 'mdpapp/sales.html', context)
 
 @login_required
@@ -110,8 +143,6 @@ def years_sales(request):
         day_total=dia.aggregate(Sum('sale_total'))
         if day_total['sale_total__sum']:
             days_total[i]=day_total['sale_total__sum']
-    print('days_total')
-    print(days_total)
     ano=today.year
     context = {'days_total': days_total, 'ano':ano}
     return render(request, 'mdpapp/allsalesyear.html', context)
@@ -272,7 +303,7 @@ def create_sale(request):
                     sale_total.append(float(mov_dict['movement_quantity'])*float(mov_dict['movement_selling_price']))
                 except KeyError:
                     pass
-            saleprov.sale_total=round(sum(sale_total),3)
+            saleprov.sale_total=round(sum(sale_total),2)
             #saves sale
             saleprov.save()
             #looks for the sale's id saved above

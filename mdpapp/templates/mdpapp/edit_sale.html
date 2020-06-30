@@ -3,80 +3,10 @@
 
 <style>
 
-    #content {
+    div {
         display: none;
     }
 
-    @media all and (orientation:portrait) {
-        #content {
-            background-color: rgba(0,0,0,1);
-            display: block;
-            height: 100%;
-            position: fixed;
-            top: 0;
-            width: 100%;
-        }
-    }
-
-    #id_form-0-movement_quantity {
-        width: 80px;
-    }
-    #id_form-0-movement_purchase_price {
-        width: 80px;
-    }
-    #id_form-0-movement_selling_price {
-        width: 80px;
-    }
-
-    #id_form-1-movement_quantity {
-        width: 80px;
-    }
-    #id_form-1-movement_purchase_price {
-        width: 80px;
-    }
-    #id_form-1-movement_selling_price {
-        width: 80px;
-    }
-
-    #id_form-2-movement_quantity {
-        width: 80px;
-    }
-    #id_form-2-movement_purchase_price {
-        width: 80px;
-    }
-    #id_form-2-movement_selling_price {
-        width: 80px;
-    }
-
-    #id_form-3-movement_quantity {
-        width: 80px;
-    }
-    #id_form-3-movement_purchase_price {
-        width: 80px;
-    }
-    #id_form-3-movement_selling_price {
-        width: 80px;
-    }
-
-    #id_form-4-movement_quantity {
-        width: 80px;
-    }
-    #id_form-4-movement_purchase_price {
-        width: 80px;
-    }
-    #id_form-4-movement_selling_price {
-        width: 80px;
-    }
-
-    #id_form-5-movement_quantity {
-        width: 80px;
-    }
-    #id_form-5-movement_purchase_price {
-        width: 80px;
-    }
-    #id_form-5-movement_selling_price {
-        width: 80px;
-    }
 </style>
 
 <div style="color: #fff;" id="content" class="d-flex justify-content-center">
@@ -133,7 +63,13 @@
                         </table>
                         {{ formset.management_form }}
     
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+         <a href="{% url 'delete_sale' sale.id %}">
+             <button type="button" class="btn btn-danger btn-lg">
+                 DELETE
+             </button>
+         </a>
+        
     </form>
 </div>
 
@@ -356,7 +292,11 @@
         if (height > width) {
             $(document).ready(function(){
                 $("div").hide();
-                $(document.body).append("{%load static%}<img id='temp' src='{% static 'mdpapp/rotate.png'%}'>")
+                if ( $( "#temp" ).length ) {
+                }
+                else{
+                    $(document.body).append("{%load static%}<img id='temp' src='{% static 'mdpapp/rotate.png'%}'>")
+                }
                 $('#temp').css({'margin':'auto'});
                 $('#temp').addClass("d-flex p-3 justify-content-center");
             });
@@ -375,7 +315,14 @@
         $('#id_client').addClass("form-control");
     });
 
+    $(document).ready(function(){
+        $('[id$=-movement_quantity]').css({'width':'80px'});
+        $('[id$=-movement_purchase_price]').css({'width':'80px'});
+        $('[id$=-movement_selling_price]').css({'width':'80px'});
+    });
+
 </script>
+
 
 {% endblock content %}
 
