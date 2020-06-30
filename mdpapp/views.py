@@ -18,7 +18,7 @@ from django.db.models import Sum
 
 import math
 
-import pygal
+#import pygal
 
 def index(request):
     return render(request, 'mdpapp/index.html')
