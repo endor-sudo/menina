@@ -73,7 +73,7 @@ def sales(request):
     print(bar2)
 
     bar_chart = pygal.Bar()
-    bar_chart.add('Últimos mês', bar2)
+    bar_chart.add('Último mês', bar2)
     bar_chart.render_to_file('mdpapp/static/mdpapp/bar_chart.svg')
     """Lists Sales"""
     today=datetime.datetime.now()
