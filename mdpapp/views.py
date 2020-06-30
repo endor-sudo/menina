@@ -44,6 +44,7 @@ def products(request):
 @login_required
 def sales(request):
     """render chart"""
+    """
     today=datetime.datetime.now()
     sales = Sale.objects.order_by('sale_date')
     days=[x for x in range(31)]
@@ -75,6 +76,7 @@ def sales(request):
     bar_chart = pygal.Bar()
     bar_chart.add('Últimos mês', bar2)
     bar_chart.render_to_file('mdpapp/static/mdpapp/bar_chart.svg')
+    """
     """Lists Sales"""
     today=datetime.datetime.now()
     ##### negative indexing is not supported so this is just a workaround to show the last 5 sales
@@ -95,7 +97,7 @@ def sales(request):
     for sale in day_sale:
         day_sale_total+=float(sale.sale_total)
     #
-    year_sale_total=round(year_sale_total,2)#check if this round is right
+    year_sale_total=round(year_sale_total,2)
     month_sale_total=round(month_sale_total,2)
     day_sale_total=round(day_sale_total,2)
     hoje=today.day
