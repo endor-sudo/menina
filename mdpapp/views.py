@@ -18,7 +18,7 @@ from django.db.models import Sum
 
 import math
 
-#import pygal
+import pygal
 
 def index(request):
     return render(request, 'mdpapp/index.html')
@@ -44,7 +44,6 @@ def products(request):
 @login_required
 def sales(request):
     """render chart"""
-    """
     today=datetime.datetime.now()
     sales = Sale.objects.order_by('sale_date')
     days=[x for x in range(31)]
@@ -76,7 +75,6 @@ def sales(request):
     bar_chart = pygal.Bar()
     bar_chart.add('Últimos mês', bar2)
     bar_chart.render_to_file('mdpapp/static/mdpapp/bar_chart.svg')
-    """
     """Lists Sales"""
     today=datetime.datetime.now()
     ##### negative indexing is not supported so this is just a workaround to show the last 5 sales
