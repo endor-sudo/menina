@@ -318,6 +318,17 @@
 
 </script>
 
+<!--<script src="https://code.jquery.com/jquery-1.12.4.js"></script>commented this out because it messed with the calculator, but the 
+    autocomplete seems to keep working-->
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+    $( function() {
+      $( "#id_client" ).autocomplete({
+        source: "{% url 'sale_creation' %}"
+      });
+    } );
+</script>
+
 {% endblock content %}
 
 {% block footer %}{% endblock %}

@@ -3,7 +3,7 @@ from .models import Client, Product, Sale, Movement
 from django.contrib.auth.decorators import login_required
 from django.forms import modelformset_factory, inlineformset_factory
 
-from django.http import HttpResponseRedirect, Http404
+from django.http import HttpResponseRedirect, Http404, JsonResponse
 from django.urls import reverse
 from .forms import ClientForm
 from .forms import ProductForm
@@ -283,18 +283,34 @@ def create_sale(request):
     """Create a new product."""
     movement_formset = modelformset_factory(Movement, exclude=('sale',), extra=1)
     if request.method != 'POST':
+
+        #autocomplete feature for client's name
+        if 'term' in request.GET:
+            qs=Client.objects.filter(client_name__icontains=request.GET.get('term'))
+            clients_field=[]
+            for cl in qs:
+                clients_field.append(cl.client_name)
+            return JsonResponse(clients_field, safe=False)
+
+
         # No data submitted; create a blank form.
         sale_form = SaleForm()
         formset=movement_formset(queryset=Movement.objects.none())
         context = {'sale_form': sale_form, 'formset': formset}
     else:
         # POST data submitted; process data. 
-        sale_form = SaleForm(request.POST)
+
+        clients_name=request.POST['client']
+        try:
+            clients_instance=Client.objects.get(client_name=clients_name)
+        except:
+            return HttpResponseRedirect(reverse('sale_creation'))
+        #This QueryDict instance is immutable
+
         formset = movement_formset(request.POST,request.FILES, queryset=Movement.objects.none())
-        context = {'sale_form': sale_form, 'formset': formset}
+
         sales=Sale.objects.all()#sales=Sale.objects.filter(owner=request.user).all()
-        if sale_form.is_valid() and formset.is_valid():
-            saleprov=sale_form.save(commit=False)
+        if  formset.is_valid():
             sale_total=[]
             for form in formset:
                 #cleans the movement_form to be used as kwargs in the Movement instantiation
@@ -303,9 +319,10 @@ def create_sale(request):
                     sale_total.append(float(mov_dict['movement_quantity'])*float(mov_dict['movement_selling_price']))
                 except KeyError:
                     pass
-            saleprov.sale_total=round(sum(sale_total),2)
-            #saves sale
-            saleprov.save()
+
+            clients_sale=Sale(client=clients_instance, sale_note=request.POST['sale_note'], sale_total=round(sum(sale_total),2))
+            clients_sale.save()
+
             #looks for the sale's id saved above
             for sale in sales:
                 sale_id=sale.id
@@ -329,5 +346,5 @@ def create_sale(request):
                 #...and saves it
                 movement_.save()
                 it+=1
-            return HttpResponseRedirect(reverse('sale_creation'))
+            return HttpResponseRedirect(reverse('sales'))
     return render(request, 'mdpapp/new_sale.html', context)

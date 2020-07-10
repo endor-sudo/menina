@@ -21,7 +21,7 @@ class ProductForm(forms.ModelForm):
         fields = ['product_name', 'product_family', 'product_note']
 
 class SaleForm(forms.ModelForm):
-    client = forms.ModelChoiceField(queryset=Client.objects.order_by('client_name'), label="Cliente")
+    client = forms.CharField(label="Cliente")
     class Meta:
         model = Sale
         fields = ['client', 'sale_note']
