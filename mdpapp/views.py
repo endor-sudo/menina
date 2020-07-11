@@ -124,7 +124,7 @@ def months_sales(request, month):
     for i in range(1,32):
         day_total=monthsales.filter(sale_date__day=i).aggregate(Sum('sale_total'))
         if day_total['sale_total__sum']:
-            days_total[i]=day_total['sale_total__sum']
+            days_total[i]=round(day_total['sale_total__sum'],2)
     print('days_total')
     print(days_total)
     mes=month
@@ -142,7 +142,7 @@ def years_sales(request):
         dia=yearsales.filter(sale_date__month=i)
         day_total=dia.aggregate(Sum('sale_total'))
         if day_total['sale_total__sum']:
-            days_total[i]=day_total['sale_total__sum']
+            days_total[i]=round(day_total['sale_total__sum'], 2)
     ano=today.year
     context = {'days_total': days_total, 'ano':ano}
     return render(request, 'mdpapp/allsalesyear.html', context)

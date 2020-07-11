@@ -23,7 +23,7 @@
                     </td>
                     <td>
                         <a href="{% url 'sale' sale.id %}">
-                            <button type="button" class="btn btn-dark">
+                            <button type="button" class="btn btn-dark btn-outline-light">
                                 {{ sale.sale_total }}€
                             </button>
                         </a>
@@ -39,10 +39,20 @@
         <nav aria-label="Page navigation example">
             <ul class="pagination pagination-lg justify-content-center">
                 {% for i in range %}
-              <li class="page-item"><a class="page-link" href="{% url 'td_sales' today i %}">{{i}}</a></li>
-              {% endfor %}
+                    <li class="page-item"><a class="page-link" href="{% url 'td_sales' today i %}">{{i}}</a></li>
+                {% endfor %}
             </ul>
         </nav>
     </div>
+
+    <script>
+        $(document).ready(function(){
+            var url=window.location.href; 
+            var page=url.slice(-2);
+            var page_number=parseInt(page,10).toString();
+            console.log(page_number);
+            $("li.page-item>a.page-link:contains("+page_number+")").parent().addClass('active');
+        });  
+    </script>
 {% endblock content %}
 

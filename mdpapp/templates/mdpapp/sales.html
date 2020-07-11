@@ -22,21 +22,21 @@
                 <tr>
                     <td>
                         <a href="{% url 'yr_sales' %}">
-                            <button type="button" class="btn btn-dark">
+                            <button type="button" class="btn btn-dark btn-outline-light">
                                 {{ year_sale_total }}€
                             </button>
                         </a>
                     </td>
                     <td>
                         <a href="{% url 'mn_sales' mes %}">
-                            <button type="button" class="btn btn-dark">
+                            <button type="button" class="btn btn-dark btn-outline-light">
                                 {{ month_sale_total }}€
                             </button>
                         </a>
                     </td>
                     <td>
                         <a href="{% url 'td_sales' hoje 1 %}">
-                            <button type="button" class="btn btn-dark">
+                            <button type="button" class="btn btn-dark btn-outline-light">
                                 {{ day_sale_total }}€
                             </button>
                         </a>
@@ -72,7 +72,7 @@
                     </td>
                     <td>
                         <a href="{% url 'sale' sale.id %}">
-                            <button type="button" class="btn btn-dark">
+                            <button type="button" class="btn btn-dark btn-outline-light">
                                 {{ sale.sale_total }}€
                             </button>
                         </a>
